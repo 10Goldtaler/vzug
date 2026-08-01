@@ -6,49 +6,55 @@
 <title>V-ZUG</title>
 <style>
 body{font:16px system-ui,sans-serif;margin:0;padding:16px;max-width:480px}
-a.go,button,input{display:block;width:100%;box-sizing:border-box;min-height:56px;font-size:17px;margin-bottom:8px}
-a.go{line-height:56px;text-align:center;background:#000;color:#fff;text-decoration:none;border-radius:4px}
-input{padding:0 12px;border:1px solid #999;border-radius:4px}
-button{border:1px solid #999;border-radius:4px;background:#eee}
-.sn{font-family:ui-monospace,monospace;font-size:26px;margin:0 0 12px}
-.err{color:#a00}
+input,a{display:block;width:100%;box-sizing:border-box;min-height:56px;margin-bottom:8px;
+  border-radius:4px;text-decoration:none}
+input{padding:0 12px;border:1px solid #999;font-family:ui-monospace,monospace;
+  font-size:22px;letter-spacing:.05em}
+a{line-height:56px;text-align:center;font-size:17px}
+#open{background:#000;color:#fff}
+#open[aria-disabled=true]{background:#ccc;color:#666;pointer-events:none}
+#scan{border:1px solid #999;color:#000}
 </style>
 </head>
 <body>
-<div id="v"></div>
+<input id="sn" inputmode="numeric" autocomplete="off" placeholder="Seriennummer" aria-label="Seriennummer">
+<a id="open" href="#">Bei V-ZUG öffnen</a>
+<a id="scan" href="#">Scannen</a>
+
 <script>
 var REGION = 'ch/de';   // z.B. 'ch/fr', 'de/de'
 var LEN    = 11;        // Länge der Seriennummer
-var AUTO   = false;     // true = sofort weiterleiten statt Link anzeigen
 
-function vzugUrl(sn) {
-  return 'https://www.vzug.com/' + REGION + '/device-information?serialNumber=' + sn;
-}
 function normalize(x) {
   var d = String(x || '').replace(/\D/g, '');
   return d.length < LEN ? null : d.slice(-LEN);
 }
 
-var raw = new URLSearchParams(location.search).get('sn');
-var sn  = raw === null ? null : normalize(raw);
-var v   = document.getElementById('v');
+var field = document.getElementById('sn');
+var open  = document.getElementById('open');
 
-if (sn && AUTO) {
-  location.replace(vzugUrl(sn));
-} else if (sn) {
-  v.innerHTML = '<p class="sn">' + sn + '</p>' +
-                '<a class="go" href="' + vzugUrl(sn) + '">Bei V-ZUG öffnen</a>';
-} else {
-  var ret = encodeURIComponent(location.origin + location.pathname + '?sn=');
-  v.innerHTML = '<a class="go" href="binaryeye://scan?ret=' + ret + '{RESULT}">Scannen</a>' +
-                '<input id="i" inputmode="numeric" placeholder="Seriennummer">' +
-                '<button id="b">Öffnen</button>' +
-                (raw === null ? '' : '<p class="err">Keine Nummer im Code: ' + raw.slice(0, 40) + '</p>');
-  document.getElementById('b').onclick = function () {
-    var s = normalize(document.getElementById('i').value);
-    if (s) location.href = vzugUrl(s);
-  };
+document.getElementById('scan').href =
+  'binaryeye://scan?ret=' +
+  encodeURIComponent(location.origin + location.pathname + '?sn=') + '{RESULT}';
+
+function refresh() {
+  var sn = normalize(field.value);
+  if (sn) {
+    open.href = 'https://www.vzug.com/' + REGION + '/device-information?serialNumber=' + sn;
+    open.removeAttribute('aria-disabled');
+  } else {
+    open.href = '#';
+    open.setAttribute('aria-disabled', 'true');
+  }
 }
+
+// Gescannter Wert landet im Feld, gekürzt auf die letzten LEN Ziffern.
+// Liess sich nichts kürzen, kommen die Rohziffern rein, damit man korrigieren kann.
+var raw = new URLSearchParams(location.search).get('sn');
+if (raw !== null) field.value = normalize(raw) || raw.replace(/\D/g, '');
+
+field.addEventListener('input', refresh);
+refresh();
 </script>
 </body>
 </html>
