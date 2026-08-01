@@ -2,166 +2,53 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<title>V-ZUG Typenschild</title>
-
-<!-- Läuft, bevor CSS oder Body geparst werden. Bei gültiger Nummer
-     verlässt der Browser die Seite, ohne je etwas zu rendern. -->
-<script>
-  var VZUG = {
-    REGION: 'ch/de',   // z.B. 'ch/fr', 'de/de'
-    SN_LEN: 11,        // 5-stellige Modellnr. + 6-stellige Gerätenr.
-    url: function (sn) {
-      return 'https://www.vzug.com/' + this.REGION +
-             '/device-information?serialNumber=' + sn;
-    },
-    normalize: function (raw) {
-      var d = String(raw || '').replace(/\D/g, '');
-      return d.length < this.SN_LEN ? null : d.slice(-this.SN_LEN);
-    }
-  };
-
-  VZUG.raw = new URLSearchParams(location.search).get('sn') ||
-             new URLSearchParams(location.search).get('code');
-  VZUG.sn = VZUG.raw === null ? null : VZUG.normalize(VZUG.raw);
-
-  // replace() statt href: kein Eintrag im Verlauf, "Zurück" führt
-  // nicht in eine Schleife zurück auf diese Seite.
-  if (VZUG.sn) location.replace(VZUG.url(VZUG.sn));
-</script>
-
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0E1013">
-<link rel="preconnect" href="https://www.vzug.com" crossorigin>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230E1013'/><rect x='6' y='12' width='20' height='8' rx='1' fill='%23FFC93C'/></svg>">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V-ZUG</title>
 <style>
-  :root{
-    --bg:#0E1013; --plate:#191D22; --etch:#2B323A;
-    --ink:#ECEFF3; --mute:#8B959F; --signal:#FFC93C; --alarm:#FF6B54;
-    --sans:ui-sans-serif,"Inter","Helvetica Neue",Arial,sans-serif;
-    --mono:ui-monospace,"SF Mono","Roboto Mono",Menlo,monospace;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;height:100%}
-  body{
-    background:var(--bg);color:var(--ink);font-family:var(--sans);
-    display:flex;flex-direction:column;justify-content:center;
-    padding:24px max(24px,env(safe-area-inset-left)) calc(24px + env(safe-area-inset-bottom));
-    -webkit-text-size-adjust:100%;
-  }
-  main{width:100%;max-width:420px;margin:0 auto}
-  .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;
-    color:var(--mute);margin:0 0 18px}
-
-  .plate{background:var(--plate);border:1px solid var(--etch);border-radius:3px;
-    padding:18px 20px;position:relative}
-  .plate::before,.plate::after{content:"";position:absolute;width:5px;height:5px;
-    border-radius:50%;background:var(--etch);top:8px}
-  .plate::before{left:8px}
-  .plate::after{right:8px}
-  .plate-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;
-    color:var(--mute);margin-bottom:6px}
-  .sn{font-family:var(--mono);font-size:30px;letter-spacing:.04em;
-    display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
-  .sn .device{color:var(--mute)}
-  .split{display:flex;gap:12px;margin-top:10px;font-size:10px;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--mute)}
-  .split span:first-child{width:5.6ch}
-
-  .status{margin:20px 0 0;font-size:14px;line-height:1.5;color:var(--mute)}
-  .status.bad{color:var(--alarm)}
-
-  .actions{margin-top:28px;display:flex;flex-direction:column;gap:10px}
-  a.btn,button.btn{-webkit-appearance:none;appearance:none;border:0;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;gap:10px;
-    min-height:60px;border-radius:4px;text-decoration:none;
-    font-size:16px;font-weight:600;font-family:inherit;letter-spacing:.01em;
-    transition:transform .12s ease}
-  a.btn:active,button.btn:active{transform:scale(.985)}
-  .primary{background:var(--signal);color:#0E1013}
-  .ghost{background:transparent;color:var(--ink);border:1px solid var(--etch)}
-  .btn:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
-
-  form{display:flex;gap:8px;margin-top:10px}
-  input{flex:1;min-width:0;min-height:60px;padding:0 16px;background:var(--plate);
-    border:1px solid var(--etch);border-radius:4px;color:var(--ink);
-    font-family:var(--mono);font-size:18px;letter-spacing:.05em}
-  input::placeholder{color:#5D6771;letter-spacing:.04em}
-  input:focus{outline:none;border-color:var(--signal)}
-  form button{padding:0 20px;min-height:60px;border-radius:4px;border:0;
-    background:var(--etch);color:var(--ink);font-family:inherit;font-size:16px;font-weight:600}
-
-  .hint{margin-top:22px;font-size:12px;line-height:1.6;color:#67717B}
-  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+body{font:16px system-ui,sans-serif;margin:0;padding:16px;max-width:480px}
+a.go,button,input{display:block;width:100%;box-sizing:border-box;min-height:56px;font-size:17px;margin-bottom:8px}
+a.go{line-height:56px;text-align:center;background:#000;color:#fff;text-decoration:none;border-radius:4px}
+input{padding:0 12px;border:1px solid #999;border-radius:4px}
+button{border:1px solid #999;border-radius:4px;background:#eee}
+.sn{font-family:ui-monospace,monospace;font-size:26px;margin:0 0 12px}
+.err{color:#a00}
 </style>
 </head>
 <body>
-<main>
-  <p class="eyebrow" id="eyebrow">Seriennummer scannen</p>
-  <div id="view"></div>
-</main>
-
+<div id="v"></div>
 <script>
-(function () {
-  // Weitergeleitet wird bereits im Head. Hier steht nur noch, was zu tun ist,
-  // wenn keine oder eine unbrauchbare Nummer ankam.
-  var view = document.getElementById('view');
-  var eyebrow = document.getElementById('eyebrow');
-  var BASE = location.origin + location.pathname;
+var REGION = 'ch/de';   // z.B. 'ch/fr', 'de/de'
+var LEN    = 11;        // Länge der Seriennummer
+var AUTO   = false;     // true = sofort weiterleiten statt Link anzeigen
 
-  function esc(s) {
-    return String(s).replace(/[&<>"]/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
-    });
-  }
+function vzugUrl(sn) {
+  return 'https://www.vzug.com/' + REGION + '/device-information?serialNumber=' + sn;
+}
+function normalize(x) {
+  var d = String(x || '').replace(/\D/g, '');
+  return d.length < LEN ? null : d.slice(-LEN);
+}
 
-  function scanUrl() {
-    // {RESULT} bleibt unkodiert – so verlangt es Binary Eye.
-    return 'binaryeye://scan?ret=' + encodeURIComponent(BASE + '?sn=') + '{RESULT}';
-  }
+var raw = new URLSearchParams(location.search).get('sn');
+var sn  = raw === null ? null : normalize(raw);
+var v   = document.getElementById('v');
 
-  function showStart(message) {
-    eyebrow.textContent = 'Seriennummer scannen';
-    view.innerHTML =
-      '<a class="btn primary" href="' + esc(scanUrl()) + '">Typenschild scannen</a>' +
-      '<form id="manual" novalidate>' +
-        '<input id="sn" inputmode="numeric" autocomplete="off" placeholder="41095 032966" aria-label="Seriennummer eingeben">' +
-        '<button type="submit">Los</button>' +
-      '</form>' +
-      (message ? '<p class="status bad">' + esc(message) + '</p>' : '') +
-      '<p class="hint">Kein Code auf dem Schild? Nummer von Hand eintippen – ' +
-      'Leerzeichen und Präfixe sind egal.</p>';
-
-    document.getElementById('manual').addEventListener('submit', function (e) {
-      e.preventDefault();
-      var sn = VZUG.normalize(document.getElementById('sn').value);
-      if (!sn) {
-        showStart('Das sind zu wenig Ziffern. Die Seriennummer hat ' + VZUG.SN_LEN + '.');
-        return;
-      }
-      location.replace(VZUG.url(sn));
-    });
-  }
-
-  if (VZUG.raw === null) {
-    showStart();
-  } else if (!VZUG.sn) {
-    showStart('Im Code steckt keine Seriennummer: „' + VZUG.raw.slice(0, 40) + '“');
-  } else {
-    // Weiterleitung läuft bereits – Fallback, falls sie blockiert wurde.
-    eyebrow.textContent = 'Gerät erkannt';
-    view.innerHTML =
-      '<div class="plate"><div class="plate-label">Serialnummer</div>' +
-      '<div class="sn"><span>' + VZUG.sn.slice(0, 5) + '</span>' +
-      '<span class="device">' + VZUG.sn.slice(5) + '</span></div>' +
-      '<div class="split"><span>Modell</span><span>Gerät</span></div></div>' +
-      '<div class="actions"><a class="btn primary" href="' + esc(VZUG.url(VZUG.sn)) +
-      '">Bei V-ZUG öffnen</a></div>';
-  }
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(function () {});
-  }
-})();
+if (sn && AUTO) {
+  location.replace(vzugUrl(sn));
+} else if (sn) {
+  v.innerHTML = '<p class="sn">' + sn + '</p>' +
+                '<a class="go" href="' + vzugUrl(sn) + '">Bei V-ZUG öffnen</a>';
+} else {
+  var ret = encodeURIComponent(location.origin + location.pathname + '?sn=');
+  v.innerHTML = '<a class="go" href="binaryeye://scan?ret=' + ret + '{RESULT}">Scannen</a>' +
+                '<input id="i" inputmode="numeric" placeholder="Seriennummer">' +
+                '<button id="b">Öffnen</button>' +
+                (raw === null ? '' : '<p class="err">Keine Nummer im Code: ' + raw.slice(0, 40) + '</p>');
+  document.getElementById('b').onclick = function () {
+    var s = normalize(document.getElementById('i').value);
+    if (s) location.href = vzugUrl(s);
+  };
+}
 </script>
 </body>
 </html>
